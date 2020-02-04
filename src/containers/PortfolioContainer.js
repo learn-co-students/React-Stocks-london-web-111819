@@ -9,6 +9,10 @@ class PortfolioContainer extends Component {
         <h2>My Portfolio</h2>
           {
             //render your portfolio stocks here
+            this.props.portfolioStocks.map(stock => <Stock 
+                stock={stock} 
+                key={stock.id} 
+                handleClick={() => this.props.removeStockFromPortfolio(stock)}/>)
           }
       </div>
     );
