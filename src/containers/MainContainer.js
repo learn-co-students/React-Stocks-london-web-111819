@@ -6,7 +6,8 @@ import SearchBar from "../components/SearchBar";
 class MainContainer extends Component {
     state = {
         stocks: [],
-        portfolioStocks: []
+        portfolioStocks: [],
+        filterBy: "none"
     };
 
     getStocks = () => {
@@ -15,13 +16,25 @@ class MainContainer extends Component {
             .then(stocks => this.setState({ stocks }));
     };
 
+    getFilteredStocks = stocksToFilter => {
+        return this.state.filterBy === "none"
+            ? stocksToFilter
+            : stocksToFilter.filter(
+                  stocks => stocks.type === this.state.filterBy
+              );
+    };
+
     componentDidMount() {
         this.getStocks();
     }
 
+    handleChange = event => {
+        this.setState({ filterBy: event.target.value });
+    };
+
     handleBuy = stockToAdd => {
         if (this.state.portfolioStocks.includes(stockToAdd)) {
-            return
+            return;
         } else {
             const updatePortfolioStocks = [
                 stockToAdd,
@@ -40,16 +53,20 @@ class MainContainer extends Component {
 
     render() {
         const stocks = this.state.stocks;
+        const filteredStocks = this.getFilteredStocks(stocks);
         const portfolioStocks = this.state.portfolioStocks;
 
         return (
             <div>
-                <SearchBar />
+                <SearchBar
+                    filterBy={this.state.filterBy}
+                    handleChange={this.handleChange}
+                />
 
                 <div className="row">
                     <div className="col-8">
                         <StockContainer
-                            stocks={[...stocks]}
+                            stocks={filteredStocks}
                             handleClick={this.handleBuy}
                         />
                     </div>
